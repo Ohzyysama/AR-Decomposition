@@ -1,0 +1,470 @@
+[
+  {
+    "row": 2,
+    "score": 55,
+    "error_count": 6,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "global_info",
+        "description": "原始需求中提到的'提升HATS-GUI的易用性和平台独立性'、'简化文件关联配置和应用程序操作流程'等价值描述在JSON中没有体现。"
+      },
+      {
+        "rule": "AC超载",
+        "sub_req_id": "REQ-5",
+        "description": "REQ-5的acceptance_criteria列表长度为5，超过了最大长度4的限制。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-1",
+        "description": "REQ-1的描述中'支持用户创建应用程序相关文件及管理文件关联'包含了两个独立动作（文件操作和关联管理）。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-2",
+        "description": "REQ-2的描述中'支持用户删除应用程序相关文件及管理文件关联'包含了两个独立动作（文件操作和关联管理）。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-3",
+        "description": "REQ-3的描述中'支持用户修改应用程序相关文件及管理文件关联'包含了两个独立动作（文件操作和关联管理）。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-4",
+        "description": "REQ-4的AC1'当用户浏览目录时，系统应从Host OS获取当前目录下的应用程序列表并显示'缺乏明确的前置条件和预期结果。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 在global_info中补充需求价值描述。2. 将REQ-5的acceptance_criteria拆分为两个子需求或合并相关AC。3. 将REQ-1、REQ-2、REQ-3中的文件操作和关联管理拆分为两个独立子需求。4. 在技术约束中明确区分系统约束和外部依赖。5. 为所有AC添加明确的前置条件和预期结果描述。"
+  },
+  {
+    "row": 5,
+    "score": 70,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-14",
+        "description": "原始需求中提到'显示10,000个节点的SDT需在5秒或更短时间内完成；显示1,000,000个节点的SDT所需时间与显示10,000个节点的SDT相比，误差不超过±2秒'，但在拆分JSON的REQ-14中只提到了'显示10,000个节点的SDT需在5秒或更短时间内完成'，遗漏了1,000,000节点SDT的性能要求。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-4",
+        "description": "REQ-4的描述中包含了'导航'和'开启/关闭'两个独立动作，违反了动词重叠规则。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-5",
+        "description": "REQ-5的描述中包含了'展开/折叠'和'全展开'两个独立动作，违反了动词重叠规则。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "global_info",
+        "description": "在global_info的technical_constraints中包含了'依赖Host OS提供文件服务、复制粘贴操作的缓冲区及进程启动支持'和'依赖HATS-SML（版本2.0）生成SDT和格式化输出文本'等外部依赖信息，这些信息应该放在外部依赖部分而非技术约束中。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 确保所有性能指标都被完整拆分到相应的子需求中，不要遗漏关键数字。2. 避免在单个子需求描述中包含多个独立动作，应将不同动作拆分为不同的子需求。3. 将外部依赖信息从技术约束中分离出来，放在正确的global_info部分。4. 检查所有子需求的描述是否只包含一个核心功能点，避免功能混杂。"
+  },
+  {
+    "row": 8,
+    "score": 85,
+    "error_count": 1,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "N/A",
+        "description": "原始需求中明确提到'20类核心交通相关数据'，但在拆分JSON中只拆分出了18个子需求（REQ-1到REQ-18），缺少了2类数据。原始需求中提到的'支持各类交通相关接口的数据传输，涵盖道路网络、交通状况、事件、设备状态等20类核心数据'，但拆分结果中只包含了18类，缺少了2类未明确说明的数据类型。"
+      }
+    ],
+    "prompt_improvement_suggestion": "在拆分需求时，应确保完整覆盖原始需求中提到的所有数据类型。建议重新审查原始需求，找出缺失的2类数据，并相应地增加子需求，确保所有20类核心数据都有对应的子需求。"
+  },
+  {
+    "row": 11,
+    "score": 100,
+    "error_count": 0,
+    "violation_details": [],
+    "prompt_improvement_suggestion": "无"
+  },
+  {
+    "row": 13,
+    "score": 100,
+    "error_count": 0,
+    "violation_details": [],
+    "prompt_improvement_suggestion": "无"
+  },
+  {
+    "row": 14,
+    "score": 85,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-15",
+        "description": "原始需求中明确提到'24小时连续观测场景下，平均科学遥测数据率约1kbps，单日数据量约10MB，不超过分配带宽'，但在REQ-15的AC3中只提到'遥测数据率符合要求'，没有明确具体数值和限制条件。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-10",
+        "description": "原始需求中明确提到'质心计算需在目标捕获后5秒内完成，将BAT初始定位（1-4角分误差）优化至2.5角秒精度'，但在REQ-10的AC1中只提到'5秒内完成'，没有提到精度要求。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-8",
+        "description": "原始需求中提到'核心模式需按预设流程切换（如根据计数率从图像模式切换至光电二极管模式等）'，但在REQ-8的描述中没有明确提到'核心模式'这一概念，只提到了模式切换规则。"
+      }
+    ],
+    "prompt_improvement_suggestion": "在拆分JSON时，应确保完整保留原始需求中的所有关键实体和数值，包括具体的性能指标、精度要求和限制条件。例如，在REQ-15中应明确包含'24小时连续观测场景下，平均科学遥测数据率约1kbps，单日数据量约10MB，不超过分配带宽'的具体数值；在REQ-10中应包含'将BAT初始定位（1-4角分误差）优化至2.5角秒精度'的精度要求。"
+  },
+  {
+    "row": 17,
+    "score": 85,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中明确提到要实现'伽马射线暴（GRB）及余辉的全流程精准探测与数据采集'，但在REQ-1、REQ-2、REQ-3的描述中只提到了'支持观测序列'，未提及核心探测目标。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-4, REQ-5, REQ-6, REQ-7",
+        "description": "原始需求中'观测前准备活动'是一个完整的流程，包括'计算行偏置图、图像偏置图、采集原始数据图像'三个步骤，但被拆分为REQ-4（触发）、REQ-5（行偏置图）、REQ-6（图像偏置图）、REQ-7（原始数据图像）四个独立子需求，违反了单一子需求应包含单一独立动作的原则。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-13",
+        "description": "原始需求中明确提到'数据采集：各类模式下数据采集速率符合设计要求，图像模式质心计算≤5秒，定位精度≤2.5角秒'，但在REQ-13中只提到了'图像模式定位精度≤2.5角秒'，遗漏了'各类模式下数据采集速率符合设计要求'这一重要指标。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 在REQ-1、REQ-2、REQ-3的描述中明确加入'实现伽马射线暴（GRB）及余辉的探测与数据采集'这一核心目标。2. 将REQ-4、REQ-5、REQ-6、REQ-7合并为一个完整的'观测前准备活动'子需求，保持流程的完整性。3. 在REQ-13中补充'各类模式下数据采集速率符合设计要求'这一指标。"
+  },
+  {
+    "row": 19,
+    "score": 70,
+    "error_count": 6,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中明确提到'BIT分为两个阶段，启动时执行阶段1（基础硬件自检）和阶段2（扩展自检）'，但在拆分JSON中，REQ-1和REQ-2被拆分为两个独立需求，违反了'BIT作为一个整体功能'的完整性。同时，REQ-1中遗漏了'故障结果以二进制位记录于EEPROM'这一关键信息。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-3",
+        "description": "原始需求中明确提到'BIT结果以二进制位记录于EEPROM的BIT_DATA区域'，但在REQ-3中只提到了记录成功和失败的结果值，遗漏了'BIT_DATA区域'这一关键信息。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-5",
+        "description": "原始需求中明确提到'BIT结果以汇总比特位和详细条目两种形式上报，清晰标识故障组件'，但在REQ-5中只提到了上报形式，遗漏了'清晰标识故障组件'这一关键信息。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-6",
+        "description": "原始需求中明确提到'EDAC仅校正DRAM单比特错误，双比特错误触发处理器复位'，但在REQ-6中只提到了单比特错误的处理，遗漏了'双比特错误触发处理器复位'这一关键信息。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-1",
+        "description": "AC1中'当XRT启动时，系统应执行阶段1自检，检测处理器分支单元、定点单元、浮点单元、DRAM和PROM校验和'作为前置条件，但未明确说明预期结果的具体内容，例如'自检成功'或'自检失败'的判断标准。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-16",
+        "description": "AC1中'当执行文件操作时，系统响应时间应≤1秒'作为预期结果，但未明确说明前置条件，例如'执行何种文件操作'，导致AC模糊不清。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 将BIT的两个阶段合并为一个需求，保持其完整性；2. 在每个AC中明确包含前置条件和预期结果，避免模糊表述；3. 确保所有关键实体（如BIT_DATA区域、故障组件标识等）在拆分后的JSON中得到完整保留；4. 对于EDAC功能，应将单比特错误和双比特错误的处理放在同一个需求中，以保持功能的完整性。"
+  },
+  {
+    "row": 20,
+    "score": 90,
+    "error_count": 1,
+    "violation_details": [
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中的'双就绪协议中，TransmitReady 和 ReceiveReady 均为高电平时数据才会传输'这一约束条件在global_business_rules中已经定义，但在REQ-1和REQ-2的描述中又重复提及，属于全局信息污染。同样，'SceMiMessageData 对象的位宽需与关联端口的位宽匹配，否则发送会出错'这一约束在global_business_rules中已定义，但在REQ-5的描述中又重复提及。"
+      }
+    ],
+    "prompt_improvement_suggestion": "建议删除子需求描述中与global_business_rules重复的约束条件，保持子需求描述的简洁性，避免信息重复。例如，REQ-1和REQ-2的描述中可以省略'采用双就绪协议（Dual Ready Protocol）与事务处理器进行握手'，因为这一信息已经在global_business_rules中定义。同样，REQ-5的描述中可以省略'SceMiMessageData 对象的位宽需与关联端口的位宽匹配，否则发送会出错'这一约束。"
+  },
+  {
+    "row": 25,
+    "score": 70,
+    "error_count": 6,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-3",
+        "description": "原始需求中明确提到'通过Transactor名称和端口名称绑定消息端口代理'，但在REQ-3的描述中未提及'C++类接口'和'C函数接口'这两个关键实体，导致信息丢失。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-3",
+        "description": "REQ-3描述中同时包含了'绑定消息端口代理'和'建立软件模型与硬件端口的关联'两个独立动作，违反了单一动作原则。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-6",
+        "description": "REQ-6描述中同时包含了'支持按位、按字、按位范围的读写操作'和'管理任意位宽的消息payload'两个独立动作，违反了单一动作原则。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-9",
+        "description": "REQ-9描述中同时包含了'访问硬件侧网表中的通道数量、时钟配置、端口宽度等参数信息'和'参数文件由基础设施 linker 自动生成'两个独立动作，后者属于全局约束而非子需求动作。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-9",
+        "description": "REQ-9的AC2中提到'当尝试修改核心配置（如通道数量、端口宽度）时，系统应阻止修改'，这属于限制约束，应放在global_info中而非子需求AC中。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-7",
+        "description": "REQ-7的AC1和AC2都缺乏明确的前置条件，例如'当参数文件存在且格式正确时'这样的前置条件缺失，导致AC不够明确。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 将REQ-3拆分为两个独立的子需求，分别描述'C++类接口绑定'和'C函数接口绑定'。2. 将REQ-6拆分为两个子需求，分别描述'消息数据序列化/反序列化'和'任意位宽消息payload管理'。3. 将REQ-9中的'参数文件由基础设施 linker 自动生成'移至global_info中。4. 为所有AC添加明确的前置条件和预期结果，例如'当参数文件存在且格式正确时，系统应能正确解析并返回参数值'。5. 确保每个子需求只包含一个核心动作，避免动词重叠。"
+  },
+  {
+    "row": 26,
+    "score": 90,
+    "error_count": 2,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "global_info",
+        "description": "原始需求中的'目标用户'包括'建筑运营商、设施管理人员、建筑运营主管'，但在global_info的target_users_and_value中只提到了'建筑运维人员、暖通空调服务技术人员、能源服务提供商'，遗漏了部分目标用户。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-5",
+        "description": "REQ-5的描述'诊断算法依赖 sensed 数据（温度、电流、功率等）和固定数据（设备规格、设定值、时间表等）'本应放在global_info中，属于全局信息，而不是作为一个独立的子需求。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 在global_info的target_users_and_value中补充完整所有目标用户。2. 将REQ-5的描述移至global_info中，并删除REQ-5子需求，因为数据缺失处理已在REQ-1、REQ-2、REQ-3的AC3中涵盖。"
+  },
+  {
+    "row": 30,
+    "score": 85,
+    "error_count": 2,
+    "violation_details": [
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-3",
+        "description": "原始需求中REQ-3描述包含'验证数值有效性'和'自动关联对应灵敏度等级的公差范围'两个独立动作，违反了'一个子需求内只能包含一个独立动作'的规则。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-2",
+        "description": "REQ-2描述中包含'时间列需按升序排列，验证所有列数据行数一致，且每条数据对应唯一时间戳'等信息，这些本应属于全局业务规则，而非特定子需求的描述。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 将REQ-3拆分为两个独立的子需求，一个负责数据验证，一个负责关联公差范围。2. 将REQ-2描述中属于全局业务规则的内容移至global_business_rules部分，仅保留批量数据导入的核心功能描述。"
+  },
+  {
+    "row": 32,
+    "score": 55,
+    "error_count": 8,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中提到'登录验证最多允许3次尝试，连续3次失败则自动关闭登录窗口，返回上一操作界面，不泄露具体失败原因'，但在REQ-1的AC2中只提到了'不泄露具体失败原因'，遗漏了'返回上一操作界面'这一重要信息。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-4",
+        "description": "REQ-4、REQ-5、REQ-6、REQ-7、REQ-8等多个子需求实际上都是'诊断灵敏度配置'这一大功能的不同方面，应该合并为一个子需求，而不是拆分成多个独立动作。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-9",
+        "description": "REQ-9、REQ-10、REQ-11、REQ-12等多个子需求实际上都是'固定数据管理'这一大功能的不同方面，应该合并为一个子需求，而不是拆分成多个独立动作。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-14",
+        "description": "REQ-14和REQ-15都是关于'浏览诊断结果'的功能，应该合并为一个子需求，而不是拆分成两个独立动作。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-16",
+        "description": "REQ-16、REQ-17、REQ-18、REQ-19都是管理员权限下的操作，应该合并为一个子需求，而不是拆分成多个独立动作。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-3",
+        "description": "REQ-3'登录失败间隔'本应属于全局约束信息，被错误地放在了子需求中，应该移到global_business_rules中。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-13",
+        "description": "REQ-13'隐藏管理员专属菜单'本应属于全局约束信息，被错误地放在了子需求中，应该移到global_business_rules中。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-5",
+        "description": "REQ-5的AC1'当管理员在配置窗口调整诊断条件灵敏度等级和公差范围时，系统应允许修改并保存'缺乏明确的前置条件和预期结果，没有说明修改后的预期效果。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 将REQ-4至REQ-8合并为一个子需求'诊断灵敏度配置'，包含所有相关功能点。2. 将REQ-9至REQ-12合并为一个子需求'固定数据管理'，包含所有相关功能点。3. 将REQ-14和REQ-15合并为一个子需求'浏览诊断结果'。4. 将REQ-16至REQ-19合并为一个子需求'管理员权限操作'。5. 将REQ-3和REQ-13移至global_business_rules中。6. 为每个AC添加明确的前置条件和预期结果，确保验收标准清晰可执行。"
+  },
+  {
+    "row": 33,
+    "score": 85,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-2",
+        "description": "原始需求中明确提到'设备运行数据保留三位有效数字，缺失数据以唯一占位符标记'，但在REQ-2的描述中只提到了'保留三位有效数字'，遗漏了'缺失数据以唯一占位符标记'这一关键信息。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-15",
+        "description": "REQ-15'确保时间戳准确一致'的内容在原始需求中属于'外部依赖'部分，而非功能需求，不应作为子需求。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-16",
+        "description": "REQ-16'确保故障类型分类有效'的内容在原始需求中属于'外部依赖'部分，而非功能需求，不应作为子需求。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 在REQ-2的描述中补充'缺失数据以唯一占位符标记'这一关键信息。2. 将REQ-15和REQ-16移至global_info中的external_dependencies部分，因为它们属于系统依赖条件而非功能需求。"
+  },
+  {
+    "row": 34,
+    "score": 85,
+    "error_count": 2,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-3",
+        "description": "原始需求中明确提到'未指定发行国代码的请求，广播至所有成员国（排除请求发起国）'，但在REQ-3的描述中仅简单提到'当查询请求未指定发行国代码时，需广播至所有成员国（排除请求发起国）'，没有明确说明这是针对已发卡查询场景的一部分，导致信息不完整。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-8",
+        "description": "REQ-8的描述中包含了两个独立动作：'支持申报的状态变更类型'和'仅允许指定合法状态码'，这违反了动词重叠规则，应该拆分为两个独立的子需求。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 对于REQ-3，应明确说明这是已发卡查询场景的一部分，并确保与原始需求描述一致。2. 将REQ-8拆分为两个独立的子需求：一个描述支持申报的状态变更类型，另一个描述仅允许指定合法状态码的约束条件。"
+  },
+  {
+    "row": 36,
+    "score": 85,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-8",
+        "description": "原始需求中提到'后续可扩展西里尔语等其他语言转写（遵循ISO 9:1995标准）'，但在REQ-8的描述中只提到了希腊语转写，缺少了西里尔语等其他语言的扩展信息。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-4",
+        "description": "REQ-4中包含了两个独立动作：'支持成员国CIA调用该服务获取搜索键'和'跨境查询时，使用搜索键结合出生日期快速匹配目标司机信息'，这违反了动词重叠规则。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-10",
+        "description": "REQ-10中包含了'两种服务均以同步Web服务形式提供，同时配套Web界面，支持CIA用户手动访问操作'，这些信息本该放在全局信息中，而不是放在子需求中。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 在REQ-8中补充西里尔语等其他语言转写的扩展信息。2. 将REQ-4拆分为两个独立的子需求，分别处理服务调用和跨境查询功能。3. 将REQ-10、REQ-11、REQ-12中的服务访问方式和部署信息移至全局信息中，保持子需求的独立性。"
+  },
+  {
+    "row": 38,
+    "score": 90,
+    "error_count": 1,
+    "violation_details": [
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-2",
+        "description": "原始需求中明确提到需要生成'近14天请求列表、各状态码（OK/超时/Server Error等）占比及数量、各请求类型（卡查询/状态变更/驾照关联等）占比、批量/在线模式分布'等具体统计维度，但REQ-2的AC中只提到'生成近14天请求列表、各状态码占比及数量、各请求类型占比、批量/在线模式分布'，没有明确说明这些维度的具体内容和预期结果，缺乏明确的前置条件和预期结果。"
+      }
+    ],
+    "prompt_improvement_suggestion": "在REQ-2和REQ-3的验收标准中，应明确包含原始需求中提到的所有具体统计维度，并明确说明这些维度的前置条件和预期结果，例如：'当过期交易数据转移完成后，系统应生成近14天请求列表，包括各状态码（OK/超时/Server Error等）的占比及数量，各请求类型（卡查询/状态变更/驾照关联等）的占比，以及批量/在线模式的分布情况，确保统计结果准确反映原始交易数据。'"
+  },
+  {
+    "row": 39,
+    "score": 65,
+    "error_count": 5,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中明确提到'每个成员国仅分配一个账户，关联唯一数字证书'，但在REQ-1的描述中只提到'通过MMC在Active Directory中创建CIA管理员账户'，缺少了这一关键限制条件。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-2",
+        "description": "原始需求中提到'账户默认权限为浏览统计报表（含请求列表、状态占比、交易耗时等）'，但在REQ-2的描述中只提到'为CIA管理员账户分配默认权限为浏览统计报表'，缺少了具体报表类型的详细描述。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-3",
+        "description": "REQ-3的描述中包含了'通过邮件通知TCN管理员'和'邮件通知用户重新登录并修改密码'两个独立动作，违反了动词重叠规则。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-6",
+        "description": "REQ-6的描述中'日志数据库需保障高可用性（如集群部署），限制管理员访问权限，执行强备份策略，防止日志篡改或丢失'这些内容本应放在全局业务规则中，而不是作为子需求。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-4",
+        "description": "REQ-4的AC2'当追踪数据库不可用时，系统应记录错误日志并触发告警'缺乏明确的前置条件和预期结果，没有说明告警的具体方式和预期结果。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 确保每个子需求的描述完整包含原始需求中的所有关键限制条件和实体信息。2. 避免在单个子需求中包含多个独立动作，应将每个独立动作拆分为单独的子需求。3. 将系统级、全局性的要求（如高可用性、安全策略等）放在全局业务规则中，而不是作为子需求。4. 确保每个AC都有明确的前置条件和预期结果，避免模糊不清的描述。"
+  },
+  {
+    "row": 41,
+    "score": 85,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-32",
+        "description": "原始需求中明确要求了'结果可视化、分析与下载'功能，但在拆分JSON中REQ-32子需求缺少title和description，完全丢失了这部分功能需求。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-10",
+        "description": "原始需求中提到'模拟完成后自动生成输出对象，包含交叉验证结果、模型气象数据等'，但在REQ-10的AC1中只提到'系统应自动生成包含交叉验证结果、模型气象数据的输出对象'，缺乏明确的前置条件（如模拟完成）和预期结果的详细描述。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-26",
+        "description": "原始需求中提到'输出对象由系统自动创建'，但在REQ-26的AC1中只提到'当BiomeBGC模拟运行完成后，系统应自动创建输出对象'，缺乏对输出对象具体内容和特性的描述。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 为REQ-32添加完整的title和description，涵盖结果可视化、分析与下载功能。2. 改进REQ-10和REQ-26的AC，明确前置条件和预期结果的详细描述。3. 确保所有子需求的AC都包含明确的前置条件和预期结果，避免模糊表述。"
+  },
+  {
+    "row": 43,
+    "score": 85,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-3",
+        "description": "原始需求中'账户状态管理'部分包含多个独立动作：状态定义、登录失败自动锁定、用户申请删除、管理员审核删除。这些应该拆分为独立的子需求，而不是塞在一个子需求中。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-12",
+        "description": "原始需求中'默认所有激活账户为'科研人员'角色，管理员可修改用户角色'属于全局业务规则，应该放在global_business_rules中，而不是作为独立子需求。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-13",
+        "description": "原始需求中'账户删除操作不可逆，删除前需确认关联对象/项目的处理方式，避免误操作导致数据丢失'属于全局业务规则，应该放在global_business_rules中，而不是作为独立子需求。"
+      }
+    ],
+    "prompt_improvement_suggestion": "建议将REQ-3拆分为多个独立的子需求，每个子需求只包含一个独立动作。同时，将REQ-12和REQ-13移至global_business_rules中，因为这些是全局业务规则而非具体功能实现。"
+  }
+]

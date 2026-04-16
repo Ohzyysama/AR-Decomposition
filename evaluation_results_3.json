@@ -1,0 +1,271 @@
+[
+  {
+    "row": 2,
+    "score": 70,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中明确提到'支持用户创建、删除、修改应用程序相关文件及管理文件关联'，但在REQ-1的AC中只包含了创建应用程序的AC，缺少删除和修改功能的AC，导致实体丢失。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-4",
+        "description": "REQ-4的描述中包含了多个独立动作（新建、打开、关闭、保存、另存为、编辑文件），但AC只覆盖了'关闭未保存配置的应用程序'这一个动作，其他动作没有对应的AC，存在动词重叠问题。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-2",
+        "description": "REQ-2的AC1'当用户访问应用程序列表时，系统应从Host OS获取当前目录下的应用程序列表并显示'缺乏明确的前置条件和预期结果，没有说明用户如何访问应用程序列表以及显示的具体格式或要求。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 为REQ-1添加删除和修改应用程序相关文件的AC；2. 将REQ-4中的多个独立动作拆分为不同的子需求或为每个动作添加对应的AC；3. 为REQ-2的AC添加明确的前置条件和预期结果，例如'当用户点击应用程序列表按钮时，系统应从Host OS获取当前目录下的应用程序列表并以表格形式显示，包含应用程序名称和创建日期等信息'。"
+  },
+  {
+    "row": 5,
+    "score": 65,
+    "error_count": 7,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中明确提到'支持SDT和格式化输出文本的查看与操作'，包括'选择、导航、搜索、展开/折叠等功能'，但REQ-1的描述仅提到'支持查看SDT和格式化输出文本'，遗漏了'操作'功能。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-11",
+        "description": "原始需求中提到'生成格式化文本时，若目标文件名已存在，需提示用户确认是否覆盖或输入新文件名'，但REQ-11的AC中仅提到'若文件已存在，提示用户确认覆盖、输入新文件名或取消操作'，遗漏了'自动生成.txt后缀的输出文件名'这一重要功能点。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-7",
+        "description": "原始需求中提到'支持SDT子树搜索，可输入搜索模式，匹配后高亮节点并居中显示，无匹配时提示\"No Match Found\"，支持正向、反向重复搜索'，但REQ-7的AC中仅提到'匹配并高亮显示匹配的节点，无匹配时提示\"No Match Found\"'，遗漏了'居中显示'和'正向、反向重复搜索'功能。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-11",
+        "description": "REQ-11的AC1中同时包含了'生成文件名'和'处理文件已存在'两个独立动作，违反了动词重叠规则。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "global_info",
+        "description": "原始需求中的'平台独立性'、'窗口数量控制'、'算法使用限制'等是系统级约束，应放在technical_constraints中，而非global_business_rules。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-1",
+        "description": "REQ-1的AC1'当用户选择查看SDT或格式化输出文本时，系统应显示相应的文本内容'缺乏明确的前置条件(如何选择查看)和预期结果(显示效果)。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-3",
+        "description": "REQ-3的AC1'当用户通过滚动条、键盘箭头键、导航窗口进行导航时，系统应移动光标到指定节点'缺乏明确的前置条件(如何选择导航方式)和预期结果(导航效果)。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 确保所有原始需求中的实体和限制条件都被完整保留，特别是性能指标和技术约束。2. 避免在单个子需求中塞入多个独立动作，将REQ-11拆分为'生成文件名'和'处理文件已存在'两个独立的子需求。3. 明确每个AC的前置条件和预期结果，使其更加具体和可测试。4. 将系统级约束正确归类到technical_constraints中，而非global_business_rules。5. 增加对SDT和格式化文本相互映射功能的单独子需求，这是原始需求中明确提到的关键功能。"
+  },
+  {
+    "row": 8,
+    "score": 95,
+    "error_count": 1,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "N/A",
+        "description": "原始需求中明确提到'20类核心交通相关数据'，但在拆分后的JSON结果中只拆分出了7个子需求，没有明确标识这7类数据是否就是全部20类数据，或者是否还有其他未拆分的13类数据。"
+      }
+    ],
+    "prompt_improvement_suggestion": "在拆分结果中明确标识出已拆分的7类数据与原始需求中提到的20类数据之间的关系，说明这7类数据是否就是全部20类数据，或者是否还有其他未拆分的13类数据。"
+  },
+  {
+    "row": 11,
+    "score": 85,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "global_info",
+        "description": "原始需求中的'依赖互联网环境，保障用户通过Web端正常访问地图服务'这一外部依赖在global_info中被遗漏。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-1",
+        "description": "AC1中'当用户进行地图缩放操作时'作为前置条件过于笼统，没有明确说明用户如何触发缩放操作（如鼠标滚轮、按钮点击等），也没有明确说明'及时响应'的具体时间标准。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-2",
+        "description": "AC1中'当用户进行地图平移操作时'作为前置条件过于笼统，没有明确说明用户如何触发平移操作（如拖拽、方向键等），也没有明确说明'流畅'的具体标准。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 在global_info中补充'互联网环境'这一外部依赖。2. 改进AC的表述，增加明确的前置条件和可衡量的预期结果，例如'当用户使用鼠标滚轮向上滚动时，地图应在1秒内放大一级，且中心点保持不变'。"
+  },
+  {
+    "row": 13,
+    "score": 100,
+    "error_count": 0,
+    "violation_details": [],
+    "prompt_improvement_suggestion": "无"
+  },
+  {
+    "row": 14,
+    "score": 60,
+    "error_count": 4,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中明确提到'模式切换符合观测序列规则，如计数率>8500cps时使用图像模式，40-8500cps时使用光电二极管模式，2-40cps时使用窗口定时模式，<2cps时使用光子计数模式'，但拆分JSON中只保留了计数率>8500cps的情况，遗漏了其他三种模式切换条件。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-2",
+        "description": "原始需求中提到'支持质心算法，可定位光源并计算强度，质心计算失败时输出\"XRT Centroid Error\"消息'和'能根据像素计数阈值判定源的可探测性（>20毫蟹），并输出源强度相关数据'，这些关键功能在拆分JSON中完全缺失。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-3",
+        "description": "原始需求中提到'EDAC模块可检测并校正DRAM单比特错误，记录错误地址和计数；检测到双比特错误时触发处理器复位，同时将错误信息写入EEPROM'和'EEPROM文件系统支持MS-DOS兼容格式，可动态加载软件补丁、存储飞行软件配置及错误日志，主备配置切换功能正常'，这些关键功能在拆分JSON中完全缺失。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-1",
+        "description": "AC1中'当【计数率>8500cps】时，系统应【切换至图像模式，并记录日志】'缺乏明确的前置条件和预期结果。例如，没有说明切换后的预期结果是什么，也没有明确说明日志记录的具体内容和格式。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 确保拆分后的JSON包含原始需求中的所有关键实体和性能指标，特别是质心计算精度、EDAC错误处理、数据压缩实时性等关键约束条件。2. 为每个验收标准提供明确的前置条件和预期结果，避免模糊表述。3. 确保每个子需求完整覆盖原始需求中的相关功能点，不要遗漏重要的模式切换条件、质心算法功能、EDAC功能等。4. 在AC中明确说明每个功能的预期结果和输出格式，例如'输出\"XRT Centroid Error\"消息'应明确消息的格式和触发条件。"
+  },
+  {
+    "row": 17,
+    "score": 85,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "AC超载",
+        "sub_req_id": "REQ-2",
+        "description": "REQ-2的acceptance_criteria列表长度为5，超过了最大长度4的限制。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-3",
+        "description": "原始需求中明确列出了计数率阈值（>8500cps、40-8500cps、2-40cps、<2cps），但在REQ-3的acceptance_criteria中只提到了计数率范围，没有明确阈值。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-2",
+        "description": "AC2中提到'准备活动应按顺序执行行偏置图、图像偏置图、原始数据图像的采集和计算'，但没有明确说明每个活动的具体帧数要求（行偏置图1帧、图像偏置图3-6帧、原始数据图像1帧）。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 将REQ-2的acceptance_criteria拆分为多个子需求，确保每个子需求的AC不超过4个。2. 在REQ-3的acceptance_criteria中明确列出计数率阈值。3. 在REQ-2的acceptance_criteria中明确说明每个准备活动的具体帧数要求。"
+  },
+  {
+    "row": 19,
+    "score": 70,
+    "error_count": 6,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中明确提到'BIT结果以二进制位记录于EEPROM'和'BIT执行：阶段1自检≤10秒，阶段2自检≤30秒'，但在REQ-1的描述和AC中均未体现这些关键信息。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-4",
+        "description": "原始需求中明确提到'EDAC响应：单比特错误校正延迟≤100微秒，双比特错误检测后1秒内触发复位'，但在REQ-4的描述和AC中均未体现这些性能指标。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-8",
+        "description": "原始需求中明确提到'配置切换：主软件配置故障后，5秒内自动切换至备用配置并重启运行'，但在REQ-8的描述和AC中未体现5秒的时间限制。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-1",
+        "description": "AC1中缺乏明确的前置条件和预期结果，未说明自检失败时的处理方式，以及成功/失败的具体标识（原始需求中提到成功=0x00000000，失败=0xFFFFFFFF）。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-3",
+        "description": "AC3中缺乏明确的前置条件和预期结果，未说明故障报告的具体格式和内容要求。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-9",
+        "description": "AC9中缺乏明确的前置条件和预期结果，未说明文件操作响应时间的测试条件和验收标准。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 在子需求描述中补充原始需求中的关键性能指标和限制条件，如BIT执行时间、EDAC响应时间、配置切换时间等。2. 在验收标准中明确说明前置条件和预期结果，包括成功/失败的具体标识、故障报告的格式和内容要求等。3. 确保所有原始需求中的关键实体都被正确拆分到相应的子需求中，避免信息丢失。"
+  },
+  {
+    "row": 20,
+    "score": 40,
+    "error_count": 8,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中明确提到'采用双就绪协议（Dual Ready Protocol）'，但在拆分JSON的REQ-1中未体现这一关键信息。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-3",
+        "description": "原始需求中提到'提供位和位范围的读写操作'，但在拆分JSON的REQ-3中未体现这一关键功能。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-1",
+        "description": "REQ-1描述中同时包含了'提供宏'和'采用双就绪协议'两个独立动作，违反了单一动作原则。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-2",
+        "description": "REQ-2描述中同时包含了'提供类'和'支持绑定'两个独立动作，违反了单一动作原则。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-3",
+        "description": "REQ-3描述中同时包含了'管理payload'、'支持序列化'和'提供读写操作'三个独立动作，违反了单一动作原则。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-4",
+        "description": "REQ-4描述中同时包含了'支持注册回调'和'实现异步通信'两个独立动作，违反了单一动作原则。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-5",
+        "description": "REQ-5中的'绑定失败时触发错误处理'实际上是原始需求中的限制约束，不应放在子需求描述中。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-1",
+        "description": "REQ-1的AC1中'支持消息输入输出'缺乏明确的预期结果，没有说明如何验证这一功能是否正常工作。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 将每个子需求拆分为更细粒度的单一功能点，避免在一个需求中包含多个独立动作。2. 确保所有原始需求中的关键实体（如双就绪协议、位宽匹配等）都在相应的子需求中体现。3. 将全局约束（如错误处理、性能指标等）明确放在global_info中，不在子需求中重复。4. 为每个AC添加明确的前置条件和可验证的预期结果，确保验收标准清晰可测。5. 考虑将REQ-5和REQ-6合并，因为它们都涉及端口绑定和消息处理的相关功能。"
+  },
+  {
+    "row": 25,
+    "score": 85,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中明确提到了具体的类名（SceMi、SceMiMessageInPortProxy、SceMiMessageOutPortProxy）和函数名（SceMi::BindMessageInPort/BindMessageOutPort、SceMiBindMessageInPort/SceMiBindMessageOutPort），但在拆分结果中仅笼统提及'C++类接口与C函数接口'，未保留这些关键实体名称。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-2",
+        "description": "原始需求中明确提到了SceMiMessageData类和相关函数，但在拆分结果中仅笼统提及'SceMiMessageData类与相关函数'，未保留这些关键实体名称。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-6",
+        "description": "原始需求中明确提到'C++ API支持多线程与单线程环境，C API功能无缺失，可独立运行'，但在拆分结果的AC中仅简单陈述'C++ API能在多线程与单线程环境中正常运行；C API功能无缺失，可独立运行'，缺乏明确的前置条件和预期结果。"
+      }
+    ],
+    "prompt_improvement_suggestion": "在拆分需求时，应保留原始需求中提到的所有关键实体名称（如类名、函数名），并在验收标准中明确前置条件和预期结果，避免笼统描述。"
+  }
+]

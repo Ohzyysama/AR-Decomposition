@@ -1,0 +1,262 @@
+[
+  {
+    "row": 2,
+    "score": 85,
+    "error_count": 2,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-21",
+        "description": "原始需求中明确提到'修改应用程序相关文件'，但在拆分JSON中，REQ-21只描述了'修改应用程序配置'，缺少对应用程序相关文件的修改功能。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-22",
+        "description": "REQ-22的描述中包含了'添加、删除、修改'三个独立动作，违反了动词重叠规则，应该拆分为三个独立的子需求。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 添加一个子需求专门处理'修改应用程序相关文件'的功能，以完整覆盖原始需求。2. 将REQ-22'管理文件关联'拆分为三个独立的子需求：'添加文件关联'、'删除文件关联'和'修改文件关联'，以避免动词重叠。"
+  },
+  {
+    "row": 5,
+    "score": 70,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "AC超载",
+        "sub_req_id": "REQ-8",
+        "description": "REQ-8的acceptance_criteria列表长度为5，超过了最大长度4的限制。原文中'搜索SDT子树'功能确实包含了多个相关验收标准，但拆分时应将部分标准合并或拆分为独立的子需求。"
+      },
+      {
+        "rule": "AC超载",
+        "sub_req_id": "REQ-10",
+        "description": "REQ-10的acceptance_criteria列表长度为5，超过了最大长度4的限制。原文中'搜索格式化文本'功能确实包含了多个相关验收标准，但拆分时应将部分标准合并或拆分为独立的子需求。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-3",
+        "description": "REQ-3的描述中包含了多个独立动作：'支持通过右键点击、键盘操作、鼠标框选、Shift键多选等方式选择节点'。这违反了'一个子需求只包含一个独立动作'的原则，应拆分为多个子需求。"
+      }
+    ],
+    "prompt_improvement_suggestion": "建议将REQ-3拆分为多个独立的子需求，每个子需求专注于一种选择方式；将REQ-8和REQ-10中的验收标准进行合并或拆分，确保每个子需求的acceptance_criteria列表不超过4项。"
+  },
+  {
+    "row": 8,
+    "score": 70,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-30",
+        "description": "原始需求中明确提到了'沃思堡不支持CCTV的瞬时摇摄/俯仰/缩放/光圈/对焦命令，达拉斯不支持CCTV的巡视视频切换命令'，但在REQ-30的描述中只写了'达拉斯'，没有完整描述不支持巡视视频切换命令的限制条件。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-26",
+        "description": "REQ-26'遵循TMDD标准'实际上包含了本该放在全局信息中的技术约束，而不是一个独立的子需求。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-27",
+        "description": "REQ-27'遵循DATEX/ASN协议'实际上包含了本该放在全局信息中的技术约束，而不是一个独立的子需求。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-28",
+        "description": "REQ-28'遵循TCP/IP协议'实际上包含了本该放在全局信息中的技术约束，而不是一个独立的子需求。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-29",
+        "description": "REQ-29'限制沃思堡CCTV命令'实际上包含了本该放在全局信息中的限制约束，而不是一个独立的子需求。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-30",
+        "description": "REQ-30'限制达拉斯CCTV命令'实际上包含了本该放在全局信息中的限制约束，而不是一个独立的子需求。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 将REQ-26至REQ-30这些技术标准和限制约束移至global_info中的technical_and_env_constraints部分，而不是作为独立的子需求。2. 完善REQ-30的描述，明确说明达拉斯不支持CCTV的巡视视频切换命令。3. 在global_info中明确标识出20类核心交通相关数据的具体分类，或者在子需求中明确标识出这20类数据。"
+  },
+  {
+    "row": 14,
+    "score": 95,
+    "error_count": 1,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中明确提到'科学数据采集模式最多支持64种'，但在拆分后的JSON结果中未体现这一限制条件。这一重要限制条件在REQ-1至REQ-6中均未提及，属于实体丢失。"
+      }
+    ],
+    "prompt_improvement_suggestion": "在REQ-1至REQ-6的描述中应添加'科学数据采集模式最多支持64种'的限制条件，确保所有重要限制条件都被包含在拆分后的JSON结果中。"
+  },
+  {
+    "row": 17,
+    "score": 55,
+    "error_count": 6,
+    "violation_details": [
+      {
+        "rule": "AC超载",
+        "sub_req_id": "REQ-11",
+        "description": "REQ-11的acceptance_criteria列表长度为5，超过了最大长度4的限制。原文中'切换至图像模式'包含多个动作（切换模式、采集图像、计算质心、生成报告），这些应该拆分为不同的子需求。"
+      },
+      {
+        "rule": "AC超载",
+        "sub_req_id": "REQ-12",
+        "description": "REQ-12的acceptance_criteria列表长度为4，达到了最大长度限制，但内容上包含了多个独立动作（切换模式、采集数据、生成报告），违反了单一动作原则。"
+      },
+      {
+        "rule": "AC超载",
+        "sub_req_id": "REQ-13",
+        "description": "REQ-13的acceptance_criteria列表长度为4，达到了最大长度限制，但内容上包含了多个独立动作（切换模式、采集数据、生成报告），违反了单一动作原则。"
+      },
+      {
+        "rule": "AC超载",
+        "sub_req_id": "REQ-14",
+        "description": "REQ-14的acceptance_criteria列表长度为4，达到了最大长度限制，但内容上包含了多个独立动作（切换模式、采集数据、生成报告），违反了单一动作原则。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-11",
+        "description": "REQ-11的描述中包含了多个独立动作：'切换至图像模式'、'采集单帧图像'、'执行质心计算'、'生成邮资标签报告'，违反了单一动作原则。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "global_info",
+        "description": "global_info中的'technical_and_env_constraints'包含了部分性能指标（如'行偏置图采集+计算≤10秒'、'图像偏置图采集+计算≤30秒'等），这些本应分散到各个子需求中，而不是放在全局信息中。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 将REQ-11、REQ-12、REQ-13、REQ-14拆分为更小的子需求，每个子需求只包含一个主要动作。2. 将global_info中的性能指标分散到相应的子需求中。3. 确保每个子需求的acceptance_criteria列表长度不超过4。4. 为每个AC添加明确的前置条件和预期结果。"
+  },
+  {
+    "row": 19,
+    "score": 70,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-3",
+        "description": "原始需求中明确提到'运行中实时监测内存/硬件错误'，但在拆分结果中缺少对应的子需求。REQ-3只提到了'触发手动BIT'，没有涵盖运行中实时监测内存/硬件错误的功能。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "global_info",
+        "description": "global_info中包含了多个技术约束和性能指标，如'BIT阶段1自检≤10秒'、'EDAC单比特错误校正延迟≤100微秒'等，这些信息应该分散到各个具体的子需求中，而不是放在全局信息中。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-7",
+        "description": "AC2'当EEPROM存储空间不足时，系统应提示存储空间不足'缺乏明确的前置条件和预期结果。原始需求中并未明确提到存储空间不足的处理方式，这是一个模糊的AC。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 添加一个子需求专门处理'运行中实时监测内存/硬件错误'的功能。2. 将global_info中的技术约束和性能指标分散到各个相关的子需求中。3. 明确REQ-7中AC2的前置条件和预期结果，或者删除这个不符合原始需求的AC。"
+  },
+  {
+    "row": 25,
+    "score": 85,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中明确提到'端口绑定需使用符合硬件侧网表HDL语言语法的Transactor名称（绝对层级路径）和端口名称（相对层级路径），否则绑定失败'，但在REQ-1的AC1中只提到了'符合HDL语言语法的名称'，没有明确说明'绝对层级路径'和'相对层级路径'这两个关键信息。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-3",
+        "description": "原始需求中明确提到'参数文件由基础设施linker自动生成，软件侧仅支持读取和有限的参数覆盖，核心配置（如通道数量、端口宽度）不可修改'，但在REQ-3的AC3中只提到了'当尝试修改核心配置时，系统应阻止修改'，没有明确说明'软件侧仅支持读取和有限的参数覆盖'这一重要限制。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "global_info",
+        "description": "原始需求中的'限制约束'第4条'C API需显式传递SceMiEC*参数处理错误，C++ API支持默认参数，两者错误处理逻辑一致'和第5条'软件侧需通过调用SceMi::ServiceLoop（C++）或SceMiServiceLoop（C）函数，才能触发消息收发与回调执行'被错误地放在了全局信息中，而实际上这些是特定于REQ-4和REQ-5的具体约束条件。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 在REQ-1的AC1中明确添加'绝对层级路径'和'相对层级路径'的说明。2. 在REQ-3的AC3中明确添加'软件侧仅支持读取和有限的参数覆盖'的说明。3. 将'限制约束'中的第4条和第5条从全局信息中移除，分别放入REQ-4和REQ-5的描述或AC中，确保每个子需求包含其特定的约束条件。"
+  },
+  {
+    "row": 30,
+    "score": 55,
+    "error_count": 9,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-6",
+        "description": "原始需求中'设备状态'是实时数据采集的一部分，不应单独拆分为一个子需求，导致信息丢失。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-2",
+        "description": "REQ-2至REQ-6都描述了实时采集不同类型的数据，但原始需求中这些是作为一个整体功能描述的，不应拆分为多个子需求。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-3",
+        "description": "REQ-3与REQ-2描述了相同类型的实时采集功能，只是数据类型不同，违反了动词重叠规则。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-4",
+        "description": "REQ-4与REQ-2、REQ-3描述了相同类型的实时采集功能，只是数据类型不同，违反了动词重叠规则。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-5",
+        "description": "REQ-5与REQ-2、REQ-3、REQ-4描述了相同类型的实时采集功能，只是数据类型不同，违反了动词重叠规则。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-6",
+        "description": "REQ-6与REQ-2、REQ-3、REQ-4、REQ-5描述了相同类型的实时采集功能，只是数据类型不同，违反了动词重叠规则。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "global_info",
+        "description": "global_info中包含了部分技术约束，如'运行诊断工具的Windows系统计算机'、'依赖兼容的数据采集设备'等，这些本应放在子需求中，而非全局信息。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-2",
+        "description": "AC1'当连接温度传感器后，系统应稳定获取温度数据'缺乏明确的前置条件和预期结果，不够具体。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-7",
+        "description": "AC1'当导入符合格式要求的ASCII文件时，系统应正确忽略注释行'缺乏明确的前置条件和预期结果，不够具体。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 将REQ-2至REQ-6合并为一个子需求，描述实时采集多种传感器数据的功能。2. 将global_info中的技术约束移至相应的子需求中。3. 为每个AC添加明确的前置条件和预期结果，使其更加具体和可测试。4. 确保每个子需求只包含一个独立动作，避免动词重叠。"
+  },
+  {
+    "row": 32,
+    "score": 85,
+    "error_count": 2,
+    "violation_details": [
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-4",
+        "description": "原始需求中REQ-4的描述为'管理员可调整各诊断条件的灵敏度等级，选择对应公差范围'，包含了'调整'和'选择'两个独立动作，违反了动词重叠规则，应拆分为两个独立子需求。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-15",
+        "description": "原始需求中的限制约束部分明确提到'固定数据日志不可删除或修改，仅支持查询，确保数据变更可追溯'，这属于系统约束而非具体功能需求，应放在global_info中而不是作为子需求的验收标准。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 将REQ-4拆分为两个独立子需求：一个负责调整诊断条件灵敏度，另一个负责选择对应公差范围。2. 将REQ-15的AC2'固定数据日志不可删除或修改，仅支持查询'移动到global_info的technical_and_env_constraints中，作为系统约束条件。"
+  },
+  {
+    "row": 39,
+    "score": 95,
+    "error_count": 1,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中明确提到'每个成员国仅分配一个账户，关联唯一数字证书'，但在REQ-1的描述和AC中只提到了账户创建和唯一性验证，没有提到关联唯一数字证书的要求，导致实体丢失。"
+      }
+    ],
+    "prompt_improvement_suggestion": "在REQ-1的描述和验收标准中应明确添加关联唯一数字证书的要求，例如在AC2中添加'创建的账户关联唯一数字证书'，或在AC3中添加'当尝试为同一成员国创建关联相同数字证书的账户时，系统应提示错误'。"
+  }
+]

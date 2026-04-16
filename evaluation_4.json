@@ -1,0 +1,185 @@
+[
+  {
+    "row": 2,
+    "score": 70,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "AC超载",
+        "sub_req_id": "REQ-5",
+        "description": "REQ-5的acceptance_criteria列表长度为5，超过了最大长度4的限制。原文中'文件选择'的验收标准有4条，但JSON中拆分成了5条AC。"
+      },
+      {
+        "rule": "AC超载",
+        "sub_req_id": "REQ-12",
+        "description": "REQ-12的acceptance_criteria列表长度为6，超过了最大长度4的限制。原文中'应用程序配置'的验收标准有4条，但JSON中拆分成了6条AC。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-12",
+        "description": "REQ-12的描述中包含了多个独立动作：'配置编辑器列表、SDT显示颜色和形状、默认展开层级、文件关联'。这些应该拆分为不同的子需求。"
+      }
+    ],
+    "prompt_improvement_suggestion": "建议将REQ-12拆分为多个独立的子需求，每个子需求专注于一个配置项。同时，将REQ-5和REQ-12中的AC数量减少到4个以内，合并相关或重复的验收标准。"
+  },
+  {
+    "row": 5,
+    "score": 85,
+    "error_count": 1,
+    "violation_details": [
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中REQ-1的描述为'支持查看SDT和格式化输出文本，SDT初始仅显示根节点，格式化输出文本忠实还原文件格式'，其中包含了'查看'和'忠实还原'两个独立动作，违反了动词重叠规则。每个子需求应该只包含一个主要动作。"
+      }
+    ],
+    "prompt_improvement_suggestion": "将REQ-1拆分为两个独立的子需求：一个关于查看SDT（初始仅显示根节点），另一个关于查看格式化输出文本（忠实还原文件格式）。这样可以避免动词重叠，使每个子需求更加专注和清晰。"
+  },
+  {
+    "row": 8,
+    "score": 85,
+    "error_count": 1,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "全局",
+        "description": "原始需求中明确提到'20类核心交通相关数据'，但在拆分JSON中只列出了14个子需求（REQ-1到REQ-14），缺少6类数据的拆分。原始需求中提到的'公交、轻轨等transit相关数据传输'被拆分为3个子需求（REQ-11、REQ-12、REQ-13），但原始需求中还有其他未明确列出但属于20类核心数据的内容未在拆分结果中体现。"
+      }
+    ],
+    "prompt_improvement_suggestion": "建议补充缺失的6类核心交通相关数据的子需求拆分，确保与原始需求中'20类核心交通相关数据'的描述一致。可以检查原始需求中是否还有其他隐含的数据类型需要拆分。"
+  },
+  {
+    "row": 14,
+    "score": 85,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求明确提到'科学数据采集模式最多支持64种'，但在REQ-1的描述中仅提到'共64种模式'，没有明确说明这是最大限制，可能导致误解为必须支持64种模式而非最多支持64种。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-4",
+        "description": "原始需求明确提到'数据压缩仅适用于非ITOS处理的数据包，ITOS需处理的数据包不得压缩'，但在REQ-4的描述中只提到'对非ITOS处理的数据包进行压缩'，遗漏了ITOS数据包不得压缩的重要限制条件。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-1",
+        "description": "REQ-1的AC1'当接收到观测指令时，系统应按预设模式采集对应数据'缺乏明确的前置条件，没有说明接收到什么样的观测指令以及对应什么模式，导致验收标准不够明确。"
+      }
+    ],
+    "prompt_improvement_suggestion": "在拆分需求时，应确保完整保留原始需求中的所有限制条件和关键数字，如'最多支持64种'而非简单说'64种'。对于数据压缩等有明确限制的功能，应同时说明适用条件和限制条件。在编写验收标准时，应明确说明前置条件和预期结果，避免模糊表述。"
+  },
+  {
+    "row": 17,
+    "score": 85,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中明确提到'伽马射线暴（GRB）及余辉'，但在REQ-1的描述中只提到'完成伽马射线暴（GRB）及余辉的探测与数据采集'，缺少了'GRB起源研究、早期宇宙探测'等价值描述。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "global_info",
+        "description": "原始需求中的'外部依赖'部分被错误地放在了global_info的'technical_and_env_constraints'中，这些应该是技术约束而非全局信息，应该分散到各个相关子需求中。"
+      },
+      {
+        "rule": "AC模糊",
+        "sub_req_id": "REQ-2",
+        "description": "AC3(异常)'当准备活动启动条件不满足时，系统应跳过准备活动直接进入主观测流程'缺乏明确的前置条件和预期结果，没有说明什么情况下条件不满足以及跳过后的具体行为。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 在REQ-1的描述中补充'GRB起源研究、早期宇宙探测'等价值描述。2. 将global_info中的'technical_and_env_constraints'移除，将外部依赖信息分散到各个相关子需求中。3. 为REQ-2的AC3(异常)补充明确的前置条件和预期结果，例如'当航天器姿态已稳定(IS_SETTLED=true)或距目标≤10角分(IS_IN_10_ARCMIN=true)时，系统应跳过准备活动直接进入主观测流程。'"
+  },
+  {
+    "row": 19,
+    "score": 55,
+    "error_count": 6,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中明确提到BIT结果记录于BIT_DATA区域，但拆分JSON中的AC1和AC2只提到记录结果，未指定具体区域BIT_DATA。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-2",
+        "description": "原始需求中明确提到双比特错误触发处理器复位，但拆分JSON中的AC2只提到触发watchdog复位，未明确是处理器复位。"
+      },
+      {
+        "rule": "AC超载",
+        "sub_req_id": "REQ-7",
+        "description": "REQ-7的acceptance_criteria列表长度为5，超过了规定的最大长度4。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-2",
+        "description": "REQ-2的描述中同时包含了'检测'和'校正'两个独立动作，应该拆分为两个独立的需求。"
+      },
+      {
+        "rule": "动词重叠",
+        "sub_req_id": "REQ-3",
+        "description": "REQ-3的描述中同时包含了'检测'和'记录'两个独立动作，应该拆分为两个独立的需求。"
+      },
+      {
+        "rule": "全局污染",
+        "sub_req_id": "REQ-5",
+        "description": "REQ-5的AC3中提到'不应影响核心观测任务时序'，这是全局性能指标，应该放在global_info中而不是子需求中。"
+      }
+    ],
+    "prompt_improvement_suggestion": "1. 将BIT结果记录区域BIT_DATA明确写入REQ-1的AC中。2. 将REQ-2拆分为两个独立需求：一个用于DRAM错误检测，一个用于DRAM错误校正。3. 将REQ-3拆分为两个独立需求：一个用于EEPROM错误检测，一个用于EEPROM错误记录。4. 将REQ-7的AC列表拆分为不超过4个，可以考虑将文件操作响应时间单独作为一个验收标准。5. 将全局性能指标'不应影响核心观测任务时序'移至global_info中。6. 明确双比特错误触发的是处理器复位而非watchdog复位。"
+  },
+  {
+    "row": 25,
+    "score": 85,
+    "error_count": 1,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "全局",
+        "description": "原始需求中的'限制约束'部分包含5条重要约束条件（端口绑定名称语法、SceMiMessageData位宽匹配、参数文件修改限制、错误处理机制、ServiceLoop调用要求），但在拆分JSON中这些约束没有被作为全局约束明确列出，而是分散在各个子需求的AC中，导致信息结构不清晰。"
+      }
+    ],
+    "prompt_improvement_suggestion": "建议将原始需求中的'限制约束'部分作为全局约束明确添加到global_info中，保持信息的完整性和结构化。"
+  },
+  {
+    "row": 30,
+    "score": 85,
+    "error_count": 3,
+    "violation_details": [
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-1",
+        "description": "原始需求中明确提到实时数据采集需要获取'温度、压力、电流、功率、设备状态等传感器数据'，但在REQ-1的AC1中只提到了'温度、压力、电流'，遗漏了'功率'和'设备状态'传感器数据。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-2",
+        "description": "原始需求中明确提到批量数据导入需要'文件需以制表符或逗号分隔列，包含指定文件头（至少含Building Identifier、Input Identifier字段），支持识别文件头前后的注释行（以#开头）并忽略'，但在REQ-2的AC1中只提到了'正确忽略注释行、解析文件头与数据列'，没有具体说明文件分隔格式、必需文件头字段和注释行识别规则。"
+      },
+      {
+        "rule": "实体丢失",
+        "sub_req_id": "REQ-2",
+        "description": "原始需求中提到'对导入数据进行有效性校验，包括数据格式、数值范围验证'，但在REQ-2的验收标准中没有对应的AC来覆盖这一功能点。"
+      }
+    ],
+    "prompt_improvement_suggestion": "在拆分需求时，应确保完整保留原始需求中提到的所有传感器数据类型、文件格式要求和数据校验功能。特别是REQ-1和REQ-2中遗漏的关键实体需要补充完整，同时为REQ-2添加关于数据格式和数值范围验证的验收标准。"
+  },
+  {
+    "row": 32,
+    "score": 100,
+    "error_count": 0,
+    "violation_details": [],
+    "prompt_improvement_suggestion": "无"
+  },
+  {
+    "row": 39,
+    "score": 100,
+    "error_count": 0,
+    "violation_details": [],
+    "prompt_improvement_suggestion": "无"
+  }
+]
