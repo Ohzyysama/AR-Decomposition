@@ -1,7 +1,7 @@
 import json
 import os
+import textwrap
 from openai import OpenAI
-
 
 # 1. 配置 API 客户端 
 API_KEY = "81a850f41bea4d1c93a583937e818307.CMgqnfJkjboW6Sva" 
@@ -10,62 +10,157 @@ MODEL_NAME = "glm-4-plus"
 
 client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
 
-# 2. 定义初始版本的提示词 
-SYSTEM_PROMPT_V1 = """
-[角色设定]
-你是一个极度严谨的、具有“代码编译器”思维的软件需求分析师。你的任务是将长文本需求完全解构，并且保证信息 100% 守恒。
+# ==========================================
+# 2. 从原异步代码中提取的提示词与模板常量
+# ==========================================
 
-[拆分规则（最高指令）]
-1. 极限原子化的边界界定（严防过度拆分与欠拆分）：
-   - 必须拆分（不同动作）：遇到“创建、删除、修改、查询”等并列的不同操作，必须一对一拆分为绝对独立的子需求！绝不允许漏掉任何一个（特别是“删除”）。
-   - 严禁拆分（同类数据对象）：如果原文是同一个动作处理多个对象（如：“实时采集温度、压力、电流、功率”），**严禁将它们拆散为多个需求**！必须作为一个整体需求，并在描述和 AC 中穷举所有数据对象。
-   - 业务流切断：具有先后顺序的连续操作（如：调整灵敏度 -> 选择公差范围），必须斩断为独立子需求。
+REQ_FORMAT_CONTENT = textwrap.dedent("""
+    【需求价值】
+    该需求旨在解决何种核心问题，或为用户及业务带来何种收益。
 
-2. 强制异常分支捕获：
-   - 扫描原文，只要出现“无...时提示”、“...否则报错”、“失败时输出”、“若不存在则...”等异常处理，必须将其写为一条独立的异常 AC。
+    【需求场景】
+    该需求的适用业务场景与具体触发条件。
 
-3. 绝对穷举提取（严防长列表截断与泛化）：
-   - 数量词核对：原文中的数量词（如“20类数据”、“64种模式”），你必须“逐个点名”，总数必须完全吻合！
-   - 禁用概括词：绝对不允许将原文中的“绝对层级路径”、“相对层级路径”等硬核技术词汇概括为“符合语法”，必须 100% 照抄原词！
+    【需求描述】
+    该需求需实现功能的详细说明，包括主要流程与关键交互。
 
-4. 彻底隔离全局与局部（严防全局污染）：
-   - 放全局 (`global_info`) 的：仅限【目标用户】、【贯穿整个系统的平台/OS/网络依赖】、【所有接口共用的安全规则】。
-   - 留局部 (留在子需求中) 的：任何带有特定前缀的时间限制（如：阶段1自检≤10秒、偏置图计算≤10秒）、特定接口的错误处理逻辑（如：C++ API的默认参数）、特定的语法要求。**只要它只影响局部功能，死也不能放进 global_info！**
+    【目标用户】
+    该需求的明确使用人群，例如某类终端用户或系统角色。
 
-5. 彻底的无菌化客观输出（严防模糊词汇）：
-   - 禁用词库：绝对禁止在 AC 中使用“流畅”、“及时”、“正常”、“成功”、“大致一致”、“尝试”、“当系统启动时（过于笼统）”等无法测试的废话！
+    【限制约束】
+    实现该需求需满足的约束条件，如用户前置操作、技术或业务限制等。
 
-[输出格式]
-必须以严格的 JSON 格式输出。严格遵守以下数据结构和注释警告：
+    【外部依赖】
+    该需求所依赖的外部系统、组件或服务。
 
+    【性能指标】
+    该需求的性能要求，例如响应时间、并发能力等指标，需明确对比基线或提升目标。
+
+    【ROM&RAM】
+    该需求对设备存储（ROM）与内存（RAM）的占用要求，需明确对比基线或优化目标。
+
+    【验收标准】
+    该需求通过验收的判定条件与依据，例如功能完整性、性能达成度等维度。
+
+    【验收设备】
+    验收该需求所需的设备类型与测试环境，如特定型号手机、操作系统版本等。
+
+    【使用产品差异分析】
+    该需求在不同设备或平台上的使用行为差异；如无差异，需明确说明。
+
+    【2D生态】
+    该需求对面向开发者的软件生态建设可能产生的影响。
+""")
+
+# 【调整9】：通过描述框定 global_info 的“全系统作用域”属性
+JSON_SCHEMA_DEFINITION = textwrap.dedent("""\
 {
-  "global_info": {
-    "target_users_and_value": "[提取真实存在的用户/价值，原文若无则填 null]",
-    "technical_and_env_constraints": [
-      "[仅限贯穿全系统的OS/网络/大盘依赖，绝不能包含特定功能的秒数、时间或报错逻辑！原文若无填 []]"
-    ]
-  },
-  "sub_requirements": [
-    {
-      "id": "REQ-1",
-      "title": "[单一动宾短语，如：调整诊断灵敏度]",
-      "description": "[必须穷举包含该动作相关的所有数值、枚举值、专用名词（如绝对层级路径）]",
-      "acceptance_criteria": [
-        "(严重警告：此处数组长度绝对不可超过 4！若发现 AC 数量即将超过 4，说明你合并了连续流程，必须立刻拆解为新的 REQ！)",
-        "AC1 (正常): 当【明确前置条件，如：用户输入正确/接收到CCD图像】时，执行【动作】，系统应【明确可测结果，照抄原文极值，如：优化至2.5角秒/包含唯一数字证书】",
-        "AC2 (异常): 当【明确失败条件，如：未找到文件/绑定名称不符】时，系统应【明确异常反馈，如：提示'file not found'/绑定失败】"
-      ]
+  "type": "object",
+  "properties": {
+    "global_info": {
+      "type": "object",
+      "description": "提取的全局信息，用于隔离系统级约束",
+      "properties": {
+        "target_users_and_value": { "type": "string", "description": "目标用户与业务价值" },
+        "technical_and_env_constraints": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "仅限贯穿所有功能的底层OS、全局通用协议。警告：仅影响特定功能的性能(如自检≤10秒)、特定文件格式(ASCII)、特定场景的高可用，严禁放于此处！"
+        }
+      },
+      "required":["target_users_and_value", "technical_and_env_constraints"]
+    },
+    "sub_requirements": {
+      "type": "array",
+      "description": "分解后的原子化子需求列表",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "子需求编号，如'REQ-01'" },
+          "title": { "type": "string", "description": "单一动宾短语标题" },
+          "description": { "type": "string", "description": "具体动作和细节，必须包含原文字段、精准修饰语" },
+          "acceptance_criteria": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "验收标准，采用 Given-When-Then 格式",
+            "maxItems": 4
+          }
+        },
+        "required":["id", "title", "description", "acceptance_criteria"]
+      }
     }
-  ]
+  },
+  "required":["global_info", "sub_requirements"]
 }
-"""
+""")
 
+# 【重要修改2】：明确界定 REQ_FORMAT_CONTENT 只是阅读材料，防止格式幻觉
+SYSTEM_PROMPT_V1 = textwrap.dedent(f"""
+    [角色设定]
+    你是一个极度严谨的、具有“代码编译器”思维的软件需求架构师。你的任务是将长文本需求解构为 JSON，保证信息 100% 守恒。
+
+    [格式认知警告（最高优先级）]
+    下面提供的《需求格式定义》是**你阅读原文时的参考结构**，**绝对不是你的输出结构！**
+    你**绝对禁止**在生成的子需求(sub_requirements)的描述中，重复抄写“【需求价值】”、“【需求场景】”、“【目标用户】”等大段背景废话！这些废话必须被拦截在 `global_info` 中！
+
+    --- 需求格式定义（仅供阅读参考） ---
+    {REQ_FORMAT_CONTENT}
+    --- 需求格式定义结束 ---
+
+    [输出格式铁律]
+    你必须严格遵循以下 JSON Schema 来构造你的输出。绝对不能丢失 `global_info` 和 `acceptance_criteria` 字段！
+    
+    --- JSON Schema定义 ---
+    ```json
+    {JSON_SCHEMA_DEFINITION}
+    ```
+    --- JSON Schema定义结束 ---
+""")
+
+# 【调整9】：加入了作用域法则、名词绑定法则、和动词防误判法则
+DECOMPOSITION_RULES =[
+    "【全局/局部的作用域法则（最高准则）】如果一个限制（如：ASCII格式、自检≤10秒、24x7高可用、单日数据量10MB）只特定约束某一个或一类动作，必须将其留在对应子需求的描述或AC中！只有当约束（如操作系统、通用TCP/IP协议）影响所有子需求时，才能放入 global_info！",
+    "【极值与名词的强绑定】提取极值或状态时，必须连带其主语、量词和存储位置一并抄入！例如：不能只写'<2cps'，必须写'计数率<2cps'；不能只写'记录在BIT_DATA'，必须写'记录在EEPROM的BIT_DATA'；不能只写'复位'，必须写'处理器复位'。绝不准省略修饰名词！",
+    "【开关动作的防坑表述】对于'启用/禁用'某功能，绝不能写成'启用并压缩'（会被误判为两个动作）。必须表述为单一动作，如：'开启数据压缩功能' 或 '禁用数据压缩功能'。",
+    "【同动词/异宾语及CRUD极限拆分】即使动作相同，只要目标/范围不同（如浏览『当前』与『历史』），必须强制拆分！针对新增、删除、修改，必须一对一拆分！绝不允许合并！",
+    "【长列表绝对对齐】原文提到20类数据，你在拆分结果中必须原原本本覆盖20类数据！遇到长列表，请在生成时在脑海中计数，严防截断！",
+    "【AC无菌化客观输出】单条子需求的AC数量不得超过4条。遇到“无..时提示”、“失败则..”，必须独立写为异常AC。绝对禁止在AC中使用“流畅”、“及时”、“正常”、“成功”等废话！"
+]
+
+FORMAT_INSTRUCTION = None  # 额外要求，可填入字符串
+
+
+# ==========================================
 # 3. 核心处理函数
-def split_requirement(req_text, system_prompt):
+# ==========================================
+
+def build_user_prompt(original_requirement: str, rules: list, specific_instruction: str = None) -> str:
+    """提取自原代码的 User Prompt 组装逻辑"""
+    prompt_parts = []
+
+    prompt_parts.append("\n=== 分解规则 ===")
+    for i, rule in enumerate(rules, 1):
+        prompt_parts.append(f"{i}. {rule}")
+
+    prompt_parts.append("\n=== 原始需求 ===")
+    prompt_parts.append(original_requirement)
+
+    if specific_instruction:
+        prompt_parts.append("\n=== 额外要求 ===")
+        prompt_parts.append(specific_instruction)
+
+    return '\n'.join(prompt_parts)
+
+
+def split_requirement(req_text, system_prompt, rules, instruction):
     """调用大模型拆分单条需求"""
+    
+    # 使用组装函数构建 user_prompt
+    user_prompt = build_user_prompt(req_text, rules, instruction)
+    
     messages = [
         {"role": "system", "content": system_prompt},
-        {"role": "user", "content": f"请按要求拆分以下原始需求：\n\n{req_text}"}
+        {"role": "user", "content": user_prompt}
     ]
     
     try:
@@ -73,7 +168,7 @@ def split_requirement(req_text, system_prompt):
             model=MODEL_NAME,
             messages=messages,
             temperature=0, # 低温度保证输出格式的稳定性和逻辑的严谨性
-            response_format={"type": "json_object"} # 强制要求模型输出 JSON 格式
+            response_format={"type": "json_object"} # 强制要求模型输出 JSON 对象
         )
         
         # 提取模型的文本回复
@@ -89,10 +184,13 @@ def split_requirement(req_text, system_prompt):
         print(f"API 调用失败: {e}")
         return None
 
+# ==========================================
 # 4. 主流程：读取、遍历、处理、保存
+# ==========================================
+
 def main():
     input_file = "bad_results.json"   # 你的原始数据文件
-    output_file = "split_4.json"
+    output_file = "split_normal_7.json"
     
     # 1. 读取原始数据
     if not os.path.exists(input_file):
@@ -113,11 +211,19 @@ def main():
         
         print(f"\n正在处理 Row: {row_id}...")
         
-        # 调用大模型
-        split_result = split_requirement(req_text, SYSTEM_PROMPT_V1)
+        # 传入规则和指令调用大模型
+        split_result = split_requirement(
+            req_text=req_text, 
+            system_prompt=SYSTEM_PROMPT_V1,
+            rules=DECOMPOSITION_RULES,
+            instruction=FORMAT_INSTRUCTION
+        )
         
         if split_result:
-            print(f"Row {row_id} 拆分成功！提取了 {len(split_result.get('sub_requirements', []))} 个子需求。")
+            # 因为 Schema 被调整为了包含 sub_requirements，这里做相应的计数提取
+            extracted_items = split_result.get('sub_requirements', [])
+            print(f"Row {row_id} 拆分成功！提取了 {len(extracted_items)} 个子需求。")
+            
             final_results.append({
                 "row": row_id,
                 "original_req": req_text,

@@ -80,8 +80,8 @@ def evaluate_split_result(original_req, parsed_json):
 
 # 4. 主流程
 def main():
-    input_file = "split_4.json"   # 上一个程序生成的拆分结果
-    output_file = "evaluation_4.json"
+    input_file = "split_normal_7.json"   # 上一个程序生成的拆分结果
+    output_file = "evaluation_normal_7.json"
     
     if not os.path.exists(input_file):
         print(f"找不到文件 {input_file}，请先运行拆分程序。")
