@@ -17,42 +17,31 @@ client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
 REQ_FORMAT_CONTENT = textwrap.dedent("""
     【需求价值】
     该需求旨在解决何种核心问题，或为用户及业务带来何种收益。
-
     【需求场景】
     该需求的适用业务场景与具体触发条件。
-
     【需求描述】
     该需求需实现功能的详细说明，包括主要流程与关键交互。
-
     【目标用户】
     该需求的明确使用人群，例如某类终端用户或系统角色。
-
     【限制约束】
     实现该需求需满足的约束条件，如用户前置操作、技术或业务限制等。
-
     【外部依赖】
     该需求所依赖的外部系统、组件或服务。
-
     【性能指标】
     该需求的性能要求，例如响应时间、并发能力等指标，需明确对比基线或提升目标。
-
     【ROM&RAM】
     该需求对设备存储（ROM）与内存（RAM）的占用要求，需明确对比基线或优化目标。
-
     【验收标准】
     该需求通过验收的判定条件与依据，例如功能完整性、性能达成度等维度。
-
     【验收设备】
     验收该需求所需的设备类型与测试环境，如特定型号手机、操作系统版本等。
-
     【使用产品差异分析】
     该需求在不同设备或平台上的使用行为差异；如无差异，需明确说明。
-
     【2D生态】
     该需求对面向开发者的软件生态建设可能产生的影响。
 """)
 
-# 【调整9】：通过描述框定 global_info 的“全系统作用域”属性
+# 【修改点1】：在 Schema 中强制要求 description 包含完整结构标签
 JSON_SCHEMA_DEFINITION = textwrap.dedent("""\
 {
   "type": "object",
@@ -61,11 +50,11 @@ JSON_SCHEMA_DEFINITION = textwrap.dedent("""\
       "type": "object",
       "description": "提取的全局信息，用于隔离系统级约束",
       "properties": {
-        "target_users_and_value": { "type": "string", "description": "目标用户与业务价值" },
+        "target_users_and_value": { "type": "string", "description": "系统整体目标用户与业务价值" },
         "technical_and_env_constraints": {
           "type": "array",
           "items": { "type": "string" },
-          "description": "仅限贯穿所有功能的底层OS、全局通用协议。警告：仅影响特定功能的性能(如自检≤10秒)、特定文件格式(ASCII)、特定场景的高可用，严禁放于此处！"
+          "description": "贯穿全系统的底层OS、全局通用协议等"
         }
       },
       "required":["target_users_and_value", "technical_and_env_constraints"]
@@ -78,7 +67,10 @@ JSON_SCHEMA_DEFINITION = textwrap.dedent("""\
         "properties": {
           "id": { "type": "string", "description": "子需求编号，如'REQ-01'" },
           "title": { "type": "string", "description": "单一动宾短语标题" },
-          "description": { "type": "string", "description": "具体动作和细节，必须包含原文字段、精准修饰语" },
+          "description": { 
+            "type": "string", 
+            "description": "【核心要求】该子需求的完整结构化文本。必须包含《需求格式定义》中的全部 12 个【标签】！并根据该子需求的具体内容进行填充。" 
+          },
           "acceptance_criteria": {
             "type": "array",
             "items": { "type": "string" },
@@ -94,16 +86,16 @@ JSON_SCHEMA_DEFINITION = textwrap.dedent("""\
 }
 """)
 
-# 【重要修改2】：明确界定 REQ_FORMAT_CONTENT 只是阅读材料，防止格式幻觉
-SYSTEM_PROMPT_V1 = textwrap.dedent(f"""
-    [角色设定]
-    你是一个极度严谨的、具有“代码编译器”思维的软件需求架构师。你的任务是将长文本需求解构为 JSON，保证信息 100% 守恒。
+# 【修改点2】：撤销禁令，明确要求大模型将 12 个标签写进 description 中
+SYSTEM_PROMPT_V1 = textwrap.dedent(f"""[角色设定]
+    你是一个极度严谨的、具有“代码编译器”思维的软件需求架构师。你的任务是将长文本需求解构为 JSON。
 
-    [格式认知警告（最高优先级）]
-    下面提供的《需求格式定义》是**你阅读原文时的参考结构**，**绝对不是你的输出结构！**
-    你**绝对禁止**在生成的子需求(sub_requirements)的描述中，重复抄写“【需求价值】”、“【需求场景】”、“【目标用户】”等大段背景废话！这些废话必须被拦截在 `global_info` 中！
+    [格式完整性要求（最高优先级）]
+    你必须为每一个拆分出来的子需求(sub_requirements)生成**完整的需求结构**！
+    在生成每个子需求的 `description` 字段时，**必须以文本形式，按顺序完整包含以下《需求格式定义》中的所有 12 个【标签】**！
+    如果该子需求在某个标签下（如【ROM&RAM】或【2D生态】）没有特定信息，请填写“无”或“同全局配置”，但**绝对不允许省略任何一个【标签】**！
 
-    --- 需求格式定义（仅供阅读参考） ---
+    --- 需求格式定义（子需求 description 必须包含的结构） ---
     {REQ_FORMAT_CONTENT}
     --- 需求格式定义结束 ---
 
@@ -117,14 +109,15 @@ SYSTEM_PROMPT_V1 = textwrap.dedent(f"""
     --- JSON Schema定义结束 ---
 """)
 
-# 【调整9】：加入了作用域法则、名词绑定法则、和动词防误判法则
+# 【修改点3】：移除之前关于全局污染的强力限制，保留动作拆解规则
 DECOMPOSITION_RULES =[
-    "【全局/局部的作用域法则（最高准则）】如果一个限制（如：ASCII格式、自检≤10秒、24x7高可用、单日数据量10MB）只特定约束某一个或一类动作，必须将其留在对应子需求的描述或AC中！只有当约束（如操作系统、通用TCP/IP协议）影响所有子需求时，才能放入 global_info！",
-    "【极值与名词的强绑定】提取极值或状态时，必须连带其主语、量词和存储位置一并抄入！例如：不能只写'<2cps'，必须写'计数率<2cps'；不能只写'记录在BIT_DATA'，必须写'记录在EEPROM的BIT_DATA'；不能只写'复位'，必须写'处理器复位'。绝不准省略修饰名词！",
+    "【结构化填充原则】在拆分出单一动作后，请结合原文的上下文，将该动作相关的目标用户、使用场景、限制约束等，精准地填入该子需求 description 对应的【标签】中。",
+    "【极值与名词的强绑定】提取极值或状态时，必须连带其主语、量词和存储位置一并抄入！不能只写'<2cps'，必须写'计数率<2cps'；不能只写'记录在BIT_DATA'，必须写'记录在EEPROM的BIT_DATA'。",
     "【开关动作的防坑表述】对于'启用/禁用'某功能，绝不能写成'启用并压缩'（会被误判为两个动作）。必须表述为单一动作，如：'开启数据压缩功能' 或 '禁用数据压缩功能'。",
     "【同动词/异宾语及CRUD极限拆分】即使动作相同，只要目标/范围不同（如浏览『当前』与『历史』），必须强制拆分！针对新增、删除、修改，必须一对一拆分！绝不允许合并！",
-    "【长列表绝对对齐】原文提到20类数据，你在拆分结果中必须原原本本覆盖20类数据！遇到长列表，请在生成时在脑海中计数，严防截断！",
-    "【AC无菌化客观输出】单条子需求的AC数量不得超过4条。遇到“无..时提示”、“失败则..”，必须独立写为异常AC。绝对禁止在AC中使用“流畅”、“及时”、“正常”、“成功”等废话！"
+    "【长列表绝对对齐】原文提到20类数据，你在拆分结果中必须原原本本覆盖20类数据！遇到长列表，严防截断！",
+    "【AC无菌化客观输出】单条子需求的AC数量不得超过4条。遇到“无..时提示”、“失败则..”，必须独立写为异常AC。绝对禁止在AC中使用“流畅”、“及时”、“正常”、“成功”等废话！",
+    "【防止信息膨胀截断】在填充每个子需求的 12 个标签时，对于【需求价值】、【需求场景】、【目标用户】、【外部依赖】等与全局完全一致的内容，**绝对禁止长篇大论地重复抄写**！请直接简写为“同全局配置”或极简概括（限10字以内）。你必须把有限的输出额度留给【需求描述】和【验收标准】！"
 ]
 
 FORMAT_INSTRUCTION = None  # 额外要求，可填入字符串
@@ -168,6 +161,7 @@ def split_requirement(req_text, system_prompt, rules, instruction):
             model=MODEL_NAME,
             messages=messages,
             temperature=0, # 低温度保证输出格式的稳定性和逻辑的严谨性
+            max_tokens=8192,
             response_format={"type": "json_object"} # 强制要求模型输出 JSON 对象
         )
         
@@ -190,7 +184,7 @@ def split_requirement(req_text, system_prompt, rules, instruction):
 
 def main():
     input_file = "bad_results.json"   # 你的原始数据文件
-    output_file = "split_normal_7.json"
+    output_file = "split_normal_8.json"
     
     # 1. 读取原始数据
     if not os.path.exists(input_file):
