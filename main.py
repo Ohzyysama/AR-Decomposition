@@ -41,83 +41,58 @@ REQ_FORMAT_CONTENT = textwrap.dedent("""
     该需求对面向开发者的软件生态建设可能产生的影响。
 """)
 
-# 【修改点1】：在 Schema 中强制要求 description 包含完整结构标签
+# 【重构说明】：删除了冗余的 global_info 和 acceptance_criteria。
+# 强制要求大模型把所有要素融进 description 的 12 个标签中。
 JSON_SCHEMA_DEFINITION = textwrap.dedent("""\
 {
   "type": "object",
   "properties": {
-    "global_info": {
-      "type": "object",
-      "description": "提取的全局信息，用于隔离系统级约束",
-      "properties": {
-        "target_users_and_value": { "type": "string", "description": "系统整体目标用户与业务价值" },
-        "technical_and_env_constraints": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "贯穿全系统的底层OS、全局通用协议等"
-        }
-      },
-      "required":["target_users_and_value", "technical_and_env_constraints"]
-    },
     "sub_requirements": {
       "type": "array",
-      "description": "分解后的原子化子需求列表",
+      "description": "分解后的微型需求书列表",
       "items": {
         "type": "object",
         "properties": {
-          "id": { "type": "string", "description": "子需求编号，如'REQ-01'" },
+          "id": { "type": "string", "description": "编号，如'REQ-01'" },
           "title": { "type": "string", "description": "单一动宾短语标题" },
           "description": { 
             "type": "string", 
-            "description": "【核心要求】该子需求的完整结构化文本。必须包含《需求格式定义》中的全部 12 个【标签】！并根据该子需求的具体内容进行填充。" 
-          },
-          "acceptance_criteria": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "验收标准，采用 Given-When-Then 格式",
-            "maxItems": 4
+            "description": "该子需求的完整微型需求书。必须包含全部 12 个【标签】。请将全局约束、目标用户、验收标准等归纳进对应的标签内。" 
           }
         },
-        "required":["id", "title", "description", "acceptance_criteria"]
+        "required":["id", "title", "description"]
       }
     }
   },
-  "required":["global_info", "sub_requirements"]
+  "required":["sub_requirements"]
 }
 """)
 
-# 【修改点2】：撤销禁令，明确要求大模型将 12 个标签写进 description 中
-SYSTEM_PROMPT_V1 = textwrap.dedent(f"""[角色设定]
-    你是一个极度严谨的、具有“代码编译器”思维的软件需求架构师。你的任务是将长文本需求解构为 JSON。
+SYSTEM_PROMPT_V1 = textwrap.dedent(f"""
+    [角色设定]
+    你是一个极度严谨的软件需求架构师。你的任务是将长文本需求，解构为一组颗粒度极细、且自带完整上下文的“微型需求书（User Stories）”。
 
-    [格式完整性要求（最高优先级）]
-    你必须为每一个拆分出来的子需求(sub_requirements)生成**完整的需求结构**！
-    在生成每个子需求的 `description` 字段时，**必须以文本形式，按顺序完整包含以下《需求格式定义》中的所有 12 个【标签】**！
-    如果该子需求在某个标签下（如【ROM&RAM】或【2D生态】）没有特定信息，请填写“无”或“同全局配置”，但**绝对不允许省略任何一个【标签】**！
+    [输出格式铁律（最高优先级）]
+    在生成每个子需求的 `description` 字段时，**必须以文本形式，按顺序完整包含以下《需求格式定义》中的全部 12 个【标签】**！
+    - 全局信息归位：请将原文中的全局目标用户、底层技术限制、外部组件依赖，直接归纳进每一个子需求的【目标用户】、【限制约束】、【外部依赖】标签中。
+    - AC归位：请将验收标准的 Given-When-Then 断言，直接写进【验收标准】标签中。
 
-    --- 需求格式定义（子需求 description 必须包含的结构） ---
+    --- 需求格式定义（description 必须包含的结构） ---
     {REQ_FORMAT_CONTENT}
     --- 需求格式定义结束 ---
 
-    [输出格式铁律]
-    你必须严格遵循以下 JSON Schema 来构造你的输出。绝对不能丢失 `global_info` 和 `acceptance_criteria` 字段！
-    
-    --- JSON Schema定义 ---
+    请严格遵循以下 JSON Schema 构造输出：
     ```json
     {JSON_SCHEMA_DEFINITION}
     ```
-    --- JSON Schema定义结束 ---
 """)
 
-# 【修改点3】：移除之前关于全局污染的强力限制，保留动作拆解规则
 DECOMPOSITION_RULES =[
-    "【结构化填充原则】在拆分出单一动作后，请结合原文的上下文，将该动作相关的目标用户、使用场景、限制约束等，精准地填入该子需求 description 对应的【标签】中。",
-    "【极值与名词的强绑定】提取极值或状态时，必须连带其主语、量词和存储位置一并抄入！不能只写'<2cps'，必须写'计数率<2cps'；不能只写'记录在BIT_DATA'，必须写'记录在EEPROM的BIT_DATA'。",
-    "【开关动作的防坑表述】对于'启用/禁用'某功能，绝不能写成'启用并压缩'（会被误判为两个动作）。必须表述为单一动作，如：'开启数据压缩功能' 或 '禁用数据压缩功能'。",
-    "【同动词/异宾语及CRUD极限拆分】即使动作相同，只要目标/范围不同（如浏览『当前』与『历史』），必须强制拆分！针对新增、删除、修改，必须一对一拆分！绝不允许合并！",
-    "【长列表绝对对齐】原文提到20类数据，你在拆分结果中必须原原本本覆盖20类数据！遇到长列表，严防截断！",
-    "【AC无菌化客观输出】单条子需求的AC数量不得超过4条。遇到“无..时提示”、“失败则..”，必须独立写为异常AC。绝对禁止在AC中使用“流畅”、“及时”、“正常”、“成功”等废话！",
-    "【防止信息膨胀截断】在填充每个子需求的 12 个标签时，对于【需求价值】、【需求场景】、【目标用户】、【外部依赖】等与全局完全一致的内容，**绝对禁止长篇大论地重复抄写**！请直接简写为“同全局配置”或极简概括（限10字以内）。你必须把有限的输出额度留给【需求描述】和【验收标准】！"
+    "【动作极限切分】遇到'创建、删除、修改'等并列操作，必须一对一拆分为绝对独立的子需求！具有先后顺序的业务流也必须斩断为独立子需求。",
+    "【标签精准投递】原文提到的'Windows/Linux等操作系统'、'TCP/IP协议'必须填入【限制约束】或【外部依赖】；'24x7高可用'等必须填入【性能指标】。决不允许遗漏！",
+    "【AC规范与限制】在填写【验收标准】标签时，最多列出 4 条 Given-When-Then 格式的验证点（必须包含异常失败分支）。绝对禁止使用'流畅'、'正常'等废话，必须包含具体的数值、报错提示语（如：提示'file not found'）。",
+    "【防截断指令（防 Token 溢出）】为了防止输出过长被截断，如果多个子需求的【需求价值】、【目标用户】、【2D生态】等标签内容完全一样，请极简概括（如填写：'同系统全局目标'或'无'），把字数额度留给【需求描述】和【验收标准】！",
+    "【极值与名词的强绑定】提取信息时，必须连带其主语、量词一并抄入！必须写'计数率<2cps'（不能只写'<2cps'）；必须写'记录在EEPROM'。"
 ]
 
 FORMAT_INSTRUCTION = None  # 额外要求，可填入字符串
@@ -184,7 +159,7 @@ def split_requirement(req_text, system_prompt, rules, instruction):
 
 def main():
     input_file = "bad_results.json"   # 你的原始数据文件
-    output_file = "split_normal_8.json"
+    output_file = "split_normal.json"
     
     # 1. 读取原始数据
     if not os.path.exists(input_file):
